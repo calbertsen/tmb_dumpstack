@@ -8,7 +8,8 @@ compile("examp.cpp", libtmb=FALSE)
 dyn.load(dynlib("examp"))
 obj <- MakeADFun(data=list(),
                  parameters=list(u=rep(0,8)),
-                 type=c("ADFun","ADGrad"))
+                 type=c("ADFun","ADGrad"),
+                 DLL="examp")
 
 sink("value")
 dummy <- obj$env$f(dumpstack=TRUE)
@@ -77,7 +78,9 @@ system("inkscape -f grad.svg -A grad.pdf")
 compile("examp_parallel.cpp", libtmb=FALSE)
 dyn.load(dynlib("examp_parallel"))
 openmp(2)
-obj <- MakeADFun(data=list(),parameters=list(u=rep(0,8)),DLL="examp_parallel")
+obj <- MakeADFun(data=list(),
+                 parameters=list(u=rep(0,8)),
+                 DLL="examp_parallel")
 openmp(1)
 sink("value_parallel")
 dummy <- obj$env$f(dumpstack=TRUE)
