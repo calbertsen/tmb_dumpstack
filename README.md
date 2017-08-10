@@ -14,13 +14,13 @@ visualize the computational graph.
 
 ## General usage
 
-To enable tracing of the computational graph compile a model using:
+To enable tracing of the operation stack compile a model using:
 
 ```r
 compile("model.cpp", tracesweep=TRUE)
 ```
 
-This will define set the preprocessor flage `CPPAD_FORWARD0SWEEP_TRACE`.
+This will set the preprocessor flag `CPPAD_FORWARD0SWEEP_TRACE`.
 
 To dump the stack use
 
