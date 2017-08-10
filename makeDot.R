@@ -3,7 +3,8 @@ makeDot <- function(file,
                     filled=NULL,
                     dotfile=paste0(file,".dot"),
                     svgfile=paste0(file,".svg"),
-                    forward=TRUE){
+                    forward=TRUE,
+                    rank_operators=FALSE){
     d <- readLines(file)
     d <- d[d != ""]
     d <- sub("^o=[^ ]*[ ]*","",d)
@@ -32,7 +33,7 @@ makeDot <- function(file,
     spl <- split(node[op!="End"],op[op!="End"])
     graph <- c(
         "digraph graphname {",
-        unlist(lapply(spl,group)),
+        if(rank_operators)unlist(lapply(spl,group)) else NULL,
         edges,
         labels,
         filled,

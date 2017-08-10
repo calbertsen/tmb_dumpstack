@@ -21,8 +21,12 @@ sink("grad")
 dummy <- obj$env$f(type="ADGrad", dumpstack=TRUE)
 sink()
 
-makeDot("grad",bold=c(seq(16,28,by=2),29),filled=c(2,3,4,10,11,25,23,26))
-makeDot("value")##,bold=24)
+makeDot("grad",
+        bold=c(seq(16,28,by=2),29),
+        filled=c(2,3,4,10,11,25,23,26),
+        rank_operators=TRUE)
+makeDot("value",
+        rank_operators=TRUE)
 
 obj$env$random <- 1:8
 h <- obj$env$spHess()
@@ -47,8 +51,12 @@ lineno <- grep("End",li)[1]
 writeLines(li[(1:lineno)],"value_parallel1")
 writeLines(li[-(1:lineno)],"value_parallel2")
 
-makeDot("value_parallel1",bold=16)
-makeDot("value_parallel2",bold=17)
+makeDot("value_parallel1",
+        bold=16,
+        rank_operators=TRUE)
+makeDot("value_parallel2",
+        bold=17,
+        rank_operators=TRUE)
 
 system("inkscape -f value_parallel1.svg -A value_parallel1.pdf")
 system("inkscape -f value_parallel2.svg -A value_parallel2.pdf")
