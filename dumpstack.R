@@ -4,7 +4,7 @@
 ## apt-get install inkscape
 ## ========================
 library(TMB)
-compile("examp.cpp")
+compile("examp.cpp", libtmb=FALSE)
 dyn.load("examp.so")
 obj <- MakeADFun(data=list(),parameters=list(u=rep(0,8)),type=c("ADFun","ADGrad"))
 
@@ -73,7 +73,7 @@ system("inkscape -f grad.svg -A grad.pdf")
 
 
 ## Parallel examp
-compile("examp_parallel.cpp")
+compile("examp_parallel.cpp", libtmb=FALSE)
 dyn.load("examp_parallel.so")
 openmp(2)
 obj <- MakeADFun(data=list(),parameters=list(u=rep(0,8)),DLL="examp_parallel")
