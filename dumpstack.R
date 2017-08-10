@@ -73,16 +73,6 @@ h <- obj$env$spHess()
 system("inkscape -f value.svg -A value.pdf")
 system("inkscape -f grad.svg -A grad.pdf")
 
-
-## sink("hess")
-## qw <- local(.Call("EvalADFunObject", ADHess$ptr, obj$env$par, control = list(order = as.integer(0), 
-##     hessiancols = integer(0), hessianrows = integer(0), sparsitypattern = as.integer(0), 
-##     rangecomponent = as.integer(1), dumpstack = as.integer(1)), 
-##     PACKAGE = obj$env$DLL),environment(obj$env$spHess))
-## sink()
-## makeDot("hess")
-
-
 ## Parallel examp
 compile("examp_parallel.cpp", libtmb=FALSE)
 dyn.load(dynlib("examp_parallel"))
