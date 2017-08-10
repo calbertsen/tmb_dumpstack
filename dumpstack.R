@@ -11,11 +11,11 @@ obj <- MakeADFun(data=list(),
                  type=c("ADFun","ADGrad"))
 
 sink("value")
-obj$env$f(dumpstack=TRUE)
+dummy <- obj$env$f(dumpstack=TRUE)
 sink()
 
 sink("grad")
-obj$env$f(type="ADGrad", dumpstack=TRUE)
+dummy <- obj$env$f(type="ADGrad", dumpstack=TRUE)
 sink()
 
 makeDot <- function(file,
@@ -85,12 +85,12 @@ system("inkscape -f grad.svg -A grad.pdf")
 
 ## Parallel examp
 compile("examp_parallel.cpp", libtmb=FALSE)
-dyn.load("examp_parallel.so")
+dyn.load(dynlib("examp_parallel"))
 openmp(2)
 obj <- MakeADFun(data=list(),parameters=list(u=rep(0,8)),DLL="examp_parallel")
 openmp(1)
 sink("value_parallel")
-qw <- obj$env$f(dumpstack=TRUE)
+dummy <- obj$env$f(dumpstack=TRUE)
 sink()
 ## Split in the two tapes
 li <- readLines("value_parallel")
