@@ -13,9 +13,9 @@ makeDot <- function(file,
     node <- sub("v=", "", node)
     op <- sub("op=","",sapply(d,function(x)x[2]))
     parseDep <- function(x){
-        ans <- sub(".*=","",grep("v.=|.v=",x,value=TRUE))
+        ans <- sub(".*=","",grep("v.=|.v=|v=",x,value=TRUE))
         ##unique(ans)
-        ans
+        ans[-1]
     }
     args <- lapply(d,parseDep)
     if(!forward){

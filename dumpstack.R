@@ -53,3 +53,17 @@ makeDot("value_parallel2",bold=17)
 system("inkscape -f value_parallel1.svg -A value_parallel1.pdf")
 system("inkscape -f value_parallel2.svg -A value_parallel2.pdf")
 
+## Linear regression - one data point
+
+library(TMB)
+compile("linreg.cpp", libtmb=FALSE)
+dyn.load(dynlib("linreg"))
+data <- list(Y = 1.234, x=5.678)
+parameters <- list(a=0, b=0, logSigma=0)
+config(optimize.instantly=0, DLL="linreg") ## Disable tape optimizer
+obj <- MakeADFun(data, parameters, DLL="linreg")
+
+sink("linreg")
+dummy <- obj$env$f(dumpstack=TRUE)
+sink()
+makeDot("linreg")
