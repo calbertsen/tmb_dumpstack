@@ -3,26 +3,29 @@
 This repo demonstrates how to dump the CppAD stack from TMB and
 visualize the computational graph.
 
+## Requirements
+
+* Command line tools:
+   ```shell
+   apt-get install graphviz inkscape
+   ```
+* Upcoming TMB version 1.7.12 or current master branch installed using
+   `make cran-version`.
+
 ## General usage
 
-Define the preprocessor *before* including the TMB header:
-
-```cpp
-#define CPPAD_FORWARD0SWEEP_TRACE 1
-#include <TMB.hpp>
-// Model code here
-```
-
-Then compile *without precompilation*:
+To enable tracing of the computational graph compile a model using:
 
 ```r
-compile("model.cpp", libtmb=FALSE)
+compile("model.cpp", tracesweep=TRUE)
 ```
+
+This will define set the preprocessor flage `CPPAD_FORWARD0SWEEP_TRACE`.
 
 To dump the stack use
 
 ```r
-obj$env$f(dumpstack=1)
+obj$env$f(dumpstack=TRUE)
 ```
 
 ## Examples
