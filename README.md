@@ -26,3 +26,7 @@ obj$env$f(dumpstack=1)
 ```
 
 ## Examples
+
+```
+R --slave < dumpstack.R
+```
