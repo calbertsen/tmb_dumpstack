@@ -4,9 +4,10 @@
 ## apt-get install inkscape
 ## ========================
 library(TMB)
+formals(compile)$tracesweep <- TRUE
 source("makeDot.R")
 
-compile("examp.cpp", libtmb=FALSE)
+compile("examp.cpp")
 dyn.load(dynlib("examp"))
 obj <- MakeADFun(data=list(),
                  parameters=list(u=rep(0,8)),
@@ -35,7 +36,7 @@ system("inkscape -f value.svg -A value.pdf")
 system("inkscape -f grad.svg -A grad.pdf")
 
 ## Parallel examp
-compile("examp_parallel.cpp", libtmb=FALSE)
+compile("examp_parallel.cpp")
 dyn.load(dynlib("examp_parallel"))
 openmp(2)
 obj <- MakeADFun(data=list(),
@@ -63,7 +64,7 @@ system("inkscape -f value_parallel2.svg -A value_parallel2.pdf")
 
 ## Linear regression - one data point
 library(TMB)
-compile("linreg.cpp", libtmb=FALSE)
+compile("linreg.cpp")
 dyn.load(dynlib("linreg"))
 data <- list(Y = 1.234, x=5.678)
 parameters <- list(a=0, b=0, logSigma=0)

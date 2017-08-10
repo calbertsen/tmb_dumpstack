@@ -1,5 +1,4 @@
 // Simple linear regression.
-#define CPPAD_FORWARD0SWEEP_TRACE 1
 #include <TMB.hpp>
 template<class Type>
 Type objective_function<Type>::operator() ()
