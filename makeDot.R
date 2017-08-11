@@ -22,9 +22,13 @@ makeDot <- function(dump,
     d <- sub("^o=[^ ]*[ ]*","",d)
     d <- gsub(" +"," ",d)
     d <- strsplit(d," ")
-    node <- sub("i=","",sapply(d,function(x)x[1]))
-    node <- sub("v=", "", node)
+    node <- sub("v=","",sapply(d,function(x)x[1]))
     op <- sub("op=","",sapply(d,function(x)x[2]))
+    ## Remove 'End' operator
+    keep <- (op != "End")
+    d <- d[keep]
+    node <- node[keep]
+    op <- op[keep]
     parseDep <- function(x){
         ans <- sub(".*=","",grep("v.=|.v=|v=",x,value=TRUE))
         ans[-1]
@@ -37,9 +41,8 @@ makeDot <- function(dump,
     }
     lab <- paste(op,node)
     labels <- paste0(node," [label=\"",lab,"\"]")
-    labels <- labels[op!="End"]
-    input <- head(seq_len(length(labels)), attr(dump, "ninput"))
-    output <- tail(seq_len(length(labels)), attr(dump, "noutput"))
+    input <- head(node, attr(dump, "ninput"))
+    output <- tail(node, attr(dump, "noutput"))
     if(!is.null(bold))bold <- paste(eval(bold),"[style=dashed]")
     if(!is.null(filled))filled <- paste(eval(filled),"[style=filled]")
     group <- function(x,rank="same")c("{",paste0("rank=",rank),x,"}")
