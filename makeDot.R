@@ -13,11 +13,13 @@ makeDot <- function(dump,
                     file = as.character(substitute(dump)),
                     bold=NULL,
                     filled=NULL,
+                    rankdir=c("TB","BT","LR","RL"),
                     dotfile=paste0(file,".dot"),
                     svgfile=paste0(file,".svg"),
                     forward=TRUE,
                     rank_operators=FALSE,
                     remap_atomic=TRUE) {
+    rankdir <- match.arg(rankdir)
     d <- dump
     d <- gsub("CExp ", "CExp", d)
     d <- d[d != ""]
@@ -66,6 +68,7 @@ makeDot <- function(dump,
     spl <- split(node[op!="End"],op[op!="End"])
     graph <- c(
         "digraph graphname {",
+        paste0('rankdir="',rankdir,'"'),
         if(rank_operators)unlist(lapply(spl,group)) else NULL,
         edges,
         labels,
