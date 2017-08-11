@@ -5,6 +5,7 @@
 ## ========================
 library(TMB)
 formals(compile)$tracesweep <- TRUE
+formals(compile)$flags <- "-O0 -g"
 source("makeDot.R")
 
 compile("examp.cpp")
@@ -78,3 +79,19 @@ config(optimize.instantly=1, DLL="linreg") ## Enable tape optimizer
 obj <- MakeADFun(data, parameters, DLL="linreg", type=c("ADFun","ADGrad"))
 linreg_grad_opt <- dumpstack(obj, "gradient")
 makeDot(linreg_grad_opt, filled=quote(c(input,output)) )
+
+## Multivariate normal: demonstrate atomic functions
+library(TMB)
+compile("mvnorm.cpp")
+dyn.load(dynlib("mvnorm"))
+data <- list()
+parameters <- list(u=rep(0,3),S=diag(3))
+data <- list(atomic=0)
+obj <- MakeADFun(data, parameters, DLL="mvnorm", type=c("ADFun","ADGrad"))
+mvnorm <- dumpstack(obj)
+makeDot(mvnorm, filled=quote(c(input,output)) )
+
+data <- list(atomic=1)
+obj <- MakeADFun(data, parameters, DLL="mvnorm", type=c("ADFun","ADGrad"))
+mvnorm_atomic <- dumpstack(obj)
+makeDot(mvnorm_atomic, filled=quote(c(input,output)) )
