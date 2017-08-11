@@ -14,19 +14,14 @@ obj <- MakeADFun(data=list(),
                  type=c("ADFun","ADGrad"),
                  DLL="examp")
 
-sink("value")
-dummy <- obj$env$f(dumpstack=TRUE)
-sink()
+value <- dumpstack(obj, "value")
+makeDot(value,
+        rank_operators=TRUE)
 
-sink("grad")
-dummy <- obj$env$f(type="ADGrad", dumpstack=TRUE)
-sink()
-
-makeDot("grad",
+grad <- dumpstack(obj, "gradient")
+makeDot(grad,
         bold=c(seq(16,28,by=2),29),
         filled=c(2,3,4,10,11,25,23,26),
-        rank_operators=TRUE)
-makeDot("value",
         rank_operators=TRUE)
 
 obj$env$random <- 1:8
@@ -42,20 +37,17 @@ openmp(2)
 obj <- MakeADFun(data=list(),
                  parameters=list(u=rep(0,8)),
                  DLL="examp_parallel")
-openmp(1)
-sink("value_parallel")
-dummy <- obj$env$f(dumpstack=TRUE)
-sink()
-## Split in the two tapes
-li <- readLines("value_parallel")
-lineno <- grep("End",li)[1]
-writeLines(li[(1:lineno)],"value_parallel1")
-writeLines(li[-(1:lineno)],"value_parallel2")
 
-makeDot("value_parallel1",
+value_parallel <- dumpstack(obj)
+
+## Split in the two tapes
+value_parallel1 <- splitDump(value_parallel)[[1]]
+value_parallel2 <- splitDump(value_parallel)[[2]]
+
+makeDot(value_parallel1,
         bold=16,
         rank_operators=TRUE)
-makeDot("value_parallel2",
+makeDot(value_parallel2,
         bold=17,
         rank_operators=TRUE)
 
@@ -72,23 +64,17 @@ parameters <- list(a=0, b=0, logSigma=0)
 ## Linear regression *without* tape optimization
 config(optimize.instantly=0, DLL="linreg") ## Disable tape optimizer
 obj <- MakeADFun(data, parameters, DLL="linreg")
-sink("linreg")
-dummy <- obj$env$f(dumpstack=TRUE)
-sink()
-makeDot("linreg")
+linreg <- dumpstack(obj)
+makeDot(linreg)
 
 ## Linear regression *with* tape optimization
 config(optimize.instantly=1, DLL="linreg") ## Enable tape optimizer
 obj <- MakeADFun(data, parameters, DLL="linreg")
-sink("linreg_opt")
-dummy <- obj$env$f(dumpstack=TRUE)
-sink()
-makeDot("linreg_opt")
+linreg_opt <- dumpstack(obj)
+makeDot(linreg_opt)
 
 ## Linear regression gradient *with* tape optimization
 config(optimize.instantly=1, DLL="linreg") ## Enable tape optimizer
 obj <- MakeADFun(data, parameters, DLL="linreg", type=c("ADFun","ADGrad"))
-sink("linreg_grad_opt")
-dummy <- obj$env$f(type="ADGrad", dumpstack=TRUE)
-sink()
-makeDot("linreg_grad_opt")
+linreg_grad_opt <- dumpstack(obj, "gradient")
+makeDot(linreg_grad_opt)

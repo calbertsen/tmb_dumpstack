@@ -1,11 +1,23 @@
-makeDot <- function(file,
+dumpstack <- function(obj, type = c("value", "gradient"), ...) {
+    type <- c("value"="ADdouble", "gradient"="ADGrad")[match.arg(type)]
+    threads.old <- openmp()
+    on.exit(openmp(threads.old))
+    openmp(1)
+    ans <- capture.output( out <- obj$env$f(dumpstack=TRUE, type=type) )
+    attr(ans, "ninput") <- length(obj$env$par)
+    attr(ans, "noutput") <- length(out)
+    ans
+}
+
+makeDot <- function(dump,
+                    file = as.character(substitute(dump)),
                     bold=NULL,
                     filled=NULL,
                     dotfile=paste0(file,".dot"),
                     svgfile=paste0(file,".svg"),
                     forward=TRUE,
                     rank_operators=FALSE){
-    d <- readLines(file)
+    d <- dump
     d <- d[d != ""]
     d <- sub("^o=[^ ]*[ ]*","",d)
     d <- gsub(" +"," ",d)
@@ -43,4 +55,12 @@ makeDot <- function(file,
     writeLines(graph,dotfile)
     cat("Writing",svgfile,"\n")
     system(paste("dot -Tsvg",dotfile,">",svgfile))
+}
+
+splitDump <- function(dump) {
+    spl <- split(dump, cumsum(dump == ""))
+    spl <- spl[sapply(spl, length) > 1]
+    names(spl) <- NULL
+    spl <- lapply(spl, function(x){attributes(x) <- attributes(dump);x})
+    spl
 }
