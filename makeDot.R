@@ -16,7 +16,8 @@ makeDot <- function(dump,
                     dotfile=paste0(file,".dot"),
                     svgfile=paste0(file,".svg"),
                     forward=TRUE,
-                    rank_operators=FALSE){
+                    rank_operators=FALSE,
+                    remap_atomic=TRUE) {
     d <- dump
     d <- d[d != ""]
     d <- sub("^o=[^ ]*[ ]*","",d)
@@ -33,6 +34,14 @@ makeDot <- function(dump,
     remap <- as.character(seq_len(length(node)))
     names(remap) <- node
     node <- as.character(seq_len(length(node)))
+    ## Atomic functions
+    if(remap_atomic) {
+        usr <- as.logical(cumsum(op=="User") %% 2)
+        usr <- xor(usr, op=="User")
+        newremap <- cumsum(!usr)
+        remap[] <- newremap
+        node[]  <- as.character(newremap)
+    }
     ## Calc dependencies (and account for remapping)
     parseDep <- function(x){
         ans <- sub(".*=","",grep("v.=|.v=|v=",x,value=TRUE))
