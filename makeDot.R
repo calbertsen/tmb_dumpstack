@@ -27,7 +27,6 @@ makeDot <- function(dump,
     op <- sub("op=","",sapply(d,function(x)x[2]))
     parseDep <- function(x){
         ans <- sub(".*=","",grep("v.=|.v=|v=",x,value=TRUE))
-        ##unique(ans)
         ans[-1]
     }
     args <- lapply(d,parseDep)
@@ -39,8 +38,10 @@ makeDot <- function(dump,
     lab <- paste(op,node)
     labels <- paste0(node," [label=\"",lab,"\"]")
     labels <- labels[op!="End"]
-    if(!is.null(bold))bold <- paste(bold,"[style=dashed]")
-    if(!is.null(filled))filled <- paste(filled,"[style=filled]")
+    input <- head(seq_len(length(labels)), attr(dump, "ninput"))
+    output <- tail(seq_len(length(labels)), attr(dump, "noutput"))
+    if(!is.null(bold))bold <- paste(eval(bold),"[style=dashed]")
+    if(!is.null(filled))filled <- paste(eval(filled),"[style=filled]")
     group <- function(x,rank="same")c("{",paste0("rank=",rank),x,"}")
     spl <- split(node[op!="End"],op[op!="End"])
     graph <- c(
