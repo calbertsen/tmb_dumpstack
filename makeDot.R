@@ -29,9 +29,16 @@ makeDot <- function(dump,
     d <- d[keep]
     node <- node[keep]
     op <- op[keep]
+    ## Some operators do not produce a variable
+    remap <- as.character(seq_len(length(node)))
+    names(remap) <- node
+    node <- as.character(seq_len(length(node)))
+    ## Calc dependencies (and account for remapping)
     parseDep <- function(x){
         ans <- sub(".*=","",grep("v.=|.v=|v=",x,value=TRUE))
-        ans[-1]
+        ans <- ans[-1]
+        ans <- remap[ans]
+        ans
     }
     args <- lapply(d,parseDep)
     if(!forward){
