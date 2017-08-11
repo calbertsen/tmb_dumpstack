@@ -19,6 +19,7 @@ makeDot <- function(dump,
                     rank_operators=FALSE,
                     remap_atomic=TRUE) {
     d <- dump
+    d <- gsub("CExp ", "CExp", d)
     d <- d[d != ""]
     d <- sub("^o=[^ ]*[ ]*","",d)
     d <- gsub(" +"," ",d)
