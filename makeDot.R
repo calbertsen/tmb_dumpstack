@@ -13,7 +13,7 @@ makeDot <- function(dump,
                     file = as.character(substitute(dump)),
                     bold=NULL,
                     filled=NULL,
-                    rankdir=c("TB","BT","LR","RL"),
+                    rankdir=c("TB","BT","LR","RL"),                    
                     dotfile=paste0(file,".dot"),
                     svgfile=paste0(file,".svg"),
                     forward=TRUE,
@@ -75,10 +75,13 @@ makeDot <- function(dump,
         filled,
         bold,
         "}")
-    cat("Writing",dotfile,"\n")
-    writeLines(graph,dotfile)
-    cat("Writing",svgfile,"\n")
-    system(paste("dot -Tsvg",dotfile,">",svgfile))
+    if(!is.null(dotfile)){
+        cat("Writing",dotfile,"\n")
+        writeLines(graph,dotfile)
+        cat("Writing",svgfile,"\n")
+        system(paste("dot -Tsvg",dotfile,">",svgfile))
+    }
+    invisible(graph)
 }
 
 splitDump <- function(dump) {
